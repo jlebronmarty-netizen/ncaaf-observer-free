@@ -10,13 +10,13 @@ import sys
 ALLOWED = {
     ".gitignore", "README.md", "SECURITY_REVIEW.md",
     "templates/manual-only.yml.disabled", "tests/test_bootstrap.py",
-    "tests/test_security_preflight.py", "scripts/security_preflight.py",
+    "tests/test_security_preflight.py", "tests/test_synthetic_recovery.py", "scripts/security_preflight.py",
     "audit/github-observations.json", "audit/BASE_INVENTORY.json",
     "audit/FILE_INVENTORY.json", "audit/OFFLINE_TEST_RESULTS.txt",
     "audit/CHECKPOINT.json", "WORKFLOW_REVIEW.md", "RESTART.md",
     ".github/workflows/manual-synthetic.yml",
 }
-CHECKOUT = "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+CHECKOUT = "actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10"
 FORBIDDEN_PARTS = {"state", "backups", "raw", "forecasts", "datasets", "node_modules"}
 FORBIDDEN_SUFFIXES = {".sqlite", ".sqlite3", ".db", ".zip", ".aesgcm", ".pem", ".key", ".csv", ".jsonl", ".parquet", ".gz", ".7z", ".tar", ".p12", ".pfx"}
 SECRET_PATTERNS = [
