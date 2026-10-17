@@ -13,7 +13,7 @@ ALLOWED = {
     "tests/test_security_preflight.py", "tests/test_synthetic_recovery.py", "tests/test_separated_recovery.py", "tests/synthetic_crypto_check.mjs", "scripts/security_preflight.py",
     "audit/github-observations.json", "audit/BASE_INVENTORY.json",
     "audit/FILE_INVENTORY.json", "audit/OFFLINE_TEST_RESULTS.txt",
-    "audit/CHECKPOINT.json", "WORKFLOW_REVIEW.md", "RESTART.md", "PHASE7_SECURITY_PLAN.md",
+    "audit/CHECKPOINT.json", "WORKFLOW_REVIEW.md", "RESTART.md", "PHASE7_SECURITY_PLAN.md", "PHASE7_SEPARATED_RECOVERY.md",
     ".github/workflows/manual-synthetic.yml",
 }
 CHECKOUT = "actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10"
