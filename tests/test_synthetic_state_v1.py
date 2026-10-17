@@ -286,7 +286,7 @@ class SyntheticState(unittest.TestCase):
         tree = ast.parse((ROOT / 'scripts/synthetic_state_v1.py').read_text())
         imports = {node.module.split('.')[0] for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)}
         imports |= {name.name.split('.')[0] for node in ast.walk(tree) if isinstance(node, ast.Import) for name in node.names}
-        self.assertEqual(imports, {'contextlib', 'pathlib', 'hashlib', 'json', 'os', 'sqlite3', 'tempfile', 'time'})
+        self.assertEqual(imports, {'contextlib', 'pathlib', 'hashlib', 'json', 'os', 'sqlite3', 'stat', 'tempfile', 'time'})
         calls = {ast.unparse(node.func) for node in ast.walk(tree) if isinstance(node, ast.Call)}
         self.assertFalse(calls & {'os.system', 'os.popen', 'eval', 'exec', '__import__'})
 
