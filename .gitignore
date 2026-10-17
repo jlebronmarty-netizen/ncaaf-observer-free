@@ -1,0 +1,16 @@
+# Refuse to accidentally stage operational state
+*.sqlite
+*.sqlite3
+*.db
+*.zip
+*.aesgcm
+*.pem
+*.key
+.env
+.env.*
+state/
+backups/
+raw/
+forecasts/
+*.log
+__pycache__/
