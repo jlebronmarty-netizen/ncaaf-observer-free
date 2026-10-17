@@ -3,6 +3,7 @@ import sys
 import unittest
 from contextlib import closing
 from concurrent.futures import ThreadPoolExecutor
+import sqlite3
 from unittest import mock
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 import synthetic_state_v1 as s
@@ -83,7 +84,9 @@ class BridgeTests(unittest.TestCase):
 
     def test_missing_generation_and_object(self):
         floor=self.seed();self.publish(self.payload(2),1)
-        with closing(s.connect(self.store.path)) as db,db:db.execute('DELETE FROM bridge_journal WHERE generation=1')
+        with closing(s.connect(self.store.path)) as db,db:
+            db.execute('DROP TRIGGER bridge_journal_no_delete')  # controlled corruption surrogate
+            db.execute('DELETE FROM bridge_journal WHERE generation=1')
         with self.assertRaises(ValueError): b.reconstruct(self.store,'reader',floor,self.request,now=220)
 
     def test_checkpoint_rollback_and_wrong_key(self):
@@ -91,7 +94,7 @@ class BridgeTests(unittest.TestCase):
         wrong=b.Store(self.root,bytes(reversed(range(32))),lambda:self.tick)
         with self.assertRaises(ValueError): wrong.head('reader')
         with closing(s.connect(self.store.path)) as db,db:
-            db.execute('DELETE FROM bridge_journal WHERE generation=2');db.execute('UPDATE bridge_meta SET generation=1,digest=?',(old['body']['digest'],))
+            db.execute('DROP TRIGGER bridge_journal_no_delete');db.execute('DELETE FROM bridge_journal WHERE generation=2');db.execute('UPDATE bridge_meta SET generation=1,digest=?',(old['body']['digest'],))
         with self.assertRaises(ValueError): b.reconstruct(self.store,'reader',latest,self.request,now=220)
 
     def test_receipt_tampering_and_foreign_namespace(self):
@@ -134,7 +137,9 @@ class BridgeTests(unittest.TestCase):
 
     def test_committed_object_missing_rejects_recovery(self):
         floor=self.seed()
-        with closing(s.connect(self.store.path)) as db,db:db.execute('DELETE FROM bridge_objects')
+        with closing(s.connect(self.store.path)) as db,db:
+            db.execute('DROP TRIGGER bridge_objects_no_delete')  # controlled missing-object surrogate
+            db.execute('DELETE FROM bridge_objects')
         with self.assertRaises(ValueError):b.reconstruct(self.store,'recovery',floor,self.request,now=120)
 
     def test_budgets_persist_across_store_restart(self):
@@ -170,6 +175,13 @@ class BridgeTests(unittest.TestCase):
         with self.assertRaises(ValueError):self.store.publish('writer','W',self.lease,-1,digest)
         with closing(s.connect(self.store.path)) as db,db:db.execute('UPDATE bridge_meta SET generation=0,requests=-1')
         with self.assertRaises(ValueError):self.store.head('reader')
+
+
+    def test_append_only_storage_triggers(self):
+        self.seed()
+        with closing(s.connect(self.store.path)) as db:
+            for statement in ['DELETE FROM bridge_objects','DELETE FROM bridge_journal',"UPDATE bridge_objects SET payload=payload","UPDATE bridge_journal SET receipt=receipt"]:
+                with self.assertRaises(sqlite3.IntegrityError):db.execute(statement)
 
 
 if __name__=='__main__':unittest.main()

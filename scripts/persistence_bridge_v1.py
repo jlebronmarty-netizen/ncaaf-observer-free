@@ -35,6 +35,8 @@ class Store:
                 CREATE TABLE bridge_objects(digest TEXT PRIMARY KEY,payload BLOB NOT NULL);
                 CREATE TABLE bridge_journal(generation INTEGER PRIMARY KEY,receipt BLOB NOT NULL);
                 CREATE TRIGGER bridge_objects_immutable BEFORE UPDATE ON bridge_objects BEGIN SELECT RAISE(ABORT,'Immutable'); END;
+                CREATE TRIGGER bridge_objects_no_delete BEFORE DELETE ON bridge_objects BEGIN SELECT RAISE(ABORT,'Immutable'); END;
+                CREATE TRIGGER bridge_journal_no_delete BEFORE DELETE ON bridge_journal BEGIN SELECT RAISE(ABORT,'Immutable'); END;
                 CREATE TRIGGER bridge_journal_immutable BEFORE UPDATE ON bridge_journal BEGIN SELECT RAISE(ABORT,'Immutable'); END;
                 """)
                 db.execute('INSERT INTO bridge_meta VALUES(?,0,NULL,0,0,NULL,0,-1,0,0,?,0)', (VERSION, self.clock()))
