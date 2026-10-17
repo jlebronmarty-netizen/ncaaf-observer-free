@@ -3,12 +3,17 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 
 class SafeBootstrap(unittest.TestCase):
-    def test_no_live_workflows(self):
-        self.assertFalse((ROOT / ".github" / "workflows").exists())
+    def test_exactly_one_reviewed_manual_workflow(self):
+        import json
+        approved = ROOT / ".github" / "workflows" / "manual-synthetic.yml"
+        template = ROOT / "templates" / "manual-only.yml.disabled"
+        self.assertTrue(approved.is_file())
+        self.assertEqual(json.loads(approved.read_text()), json.loads(template.read_text()))
+        self.assertEqual([p.name for p in approved.parent.iterdir()], ["manual-synthetic.yml"])
 
     def test_templates_disabled(self):
         self.assertTrue((ROOT / "templates" / "manual-only.yml.disabled").is_file())
-        self.assertEqual(list(ROOT.glob("**/*.yml")), [])
+        self.assertEqual([p.as_posix().removeprefix(ROOT.as_posix()+"/") for p in ROOT.glob("**/*.yml")], [".github/workflows/manual-synthetic.yml"])
         self.assertEqual(list(ROOT.glob("**/*.yaml")), [])
 
     def test_no_state_or_secrets(self):

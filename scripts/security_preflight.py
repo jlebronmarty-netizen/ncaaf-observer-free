@@ -14,6 +14,7 @@ ALLOWED = {
     "audit/github-observations.json", "audit/BASE_INVENTORY.json",
     "audit/FILE_INVENTORY.json", "audit/OFFLINE_TEST_RESULTS.txt",
     "audit/CHECKPOINT.json", "WORKFLOW_REVIEW.md", "RESTART.md",
+    ".github/workflows/manual-synthetic.yml",
 }
 CHECKOUT = "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
 FORBIDDEN_PARTS = {"state", "backups", "raw", "forecasts", "datasets", "node_modules"}
@@ -69,7 +70,20 @@ def inspect(root):
     template = root / "templates/manual-only.yml.disabled"
     try: errors.extend(workflow_findings(json.loads(template.read_text(encoding="utf-8"))))
     except (ValueError, OSError): errors.append("disabled workflow missing or not strict JSON/YAML subset")
-    if (root / ".github/workflows").exists(): errors.append("active workflow directory forbidden")
+    # Only the exact reviewed workflow is permitted, byte-equivalent to the disabled template.
+    active_dir = root / ".github/workflows"
+    approved = active_dir / "manual-synthetic.yml"
+    if active_dir.exists():
+        if not approved.is_file(): errors.append("reviewed manual-only workflow missing")
+        else:
+            try:
+                enabled_data = json.loads(approved.read_text(encoding="utf-8"))
+                template_data = json.loads(template.read_text(encoding="utf-8"))
+                if enabled_data != template_data: errors.append("installed workflow differs from reviewed template")
+                errors.extend(workflow_findings(enabled_data))
+            except (ValueError, OSError): errors.append("installed workflow not strict reviewed JSON")
+        if sorted(p.name for p in active_dir.iterdir()) != ["manual-synthetic.yml"]:
+            errors.append("additional active workflow forbidden")
     return errors
 
 if __name__ == "__main__":
