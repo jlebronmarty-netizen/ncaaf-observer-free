@@ -1,0 +1,33 @@
+{
+  "name": "NCAAF synthetic security preflight - DISABLED TEMPLATE",
+  "on": {
+    "workflow_dispatch": {}
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "jobs": {
+    "preflight": {
+      "runs-on": "windows-2022",
+      "timeout-minutes": 10,
+      "permissions": {
+        "contents": "read"
+      },
+      "steps": [
+        {
+          "name": "Read source only",
+          "uses": "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683",
+          "with": {
+            "persist-credentials": false,
+            "fetch-depth": 1
+          }
+        },
+        {
+          "name": "Offline synthetic security tests",
+          "shell": "pwsh",
+          "run": "python -I -m unittest discover -s tests -v"
+        }
+      ]
+    }
+  }
+}
