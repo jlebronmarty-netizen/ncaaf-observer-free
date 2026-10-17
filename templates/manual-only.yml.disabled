@@ -1,0 +1,15 @@
+# NON-ACTIVE TEMPLATE; DO NOT RENAME OR INSTALL IN .github/workflows WITHOUT APPROVAL.
+name: NCAAF isolated synthetic preflight (manual only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Synthetic bootstrap placeholder
+        shell: pwsh
+        run: |
+          Write-Output 'No collection, credentials, backups or publication.'
