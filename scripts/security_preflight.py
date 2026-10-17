@@ -10,7 +10,7 @@ import sys
 ALLOWED = {
     ".gitignore", "README.md", "SECURITY_REVIEW.md",
     "templates/manual-only.yml.disabled", "tests/test_bootstrap.py",
-    "tests/test_security_preflight.py", "tests/test_synthetic_recovery.py", "tests/test_separated_recovery.py", "tests/synthetic_crypto_check.mjs", "scripts/security_preflight.py", "scripts/synthetic_state_v1.py", "tests/test_synthetic_state_v1.py", "PHASE8B_SYNTHETIC_STATE.md",
+    "tests/test_security_preflight.py", "tests/test_synthetic_recovery.py", "tests/test_separated_recovery.py", "tests/synthetic_crypto_check.mjs", "scripts/security_preflight.py", "scripts/synthetic_state_v1.py", "tests/test_synthetic_state_v1.py", "PHASE8B_SYNTHETIC_STATE.md", "tests/test_phase8c_hardening.py", "PHASE8C_SECURITY_REVIEW.md",
     "audit/github-observations.json", "audit/BASE_INVENTORY.json",
     "audit/FILE_INVENTORY.json", "audit/OFFLINE_TEST_RESULTS.txt",
     "audit/CHECKPOINT.json", "WORKFLOW_REVIEW.md", "RESTART.md", "PHASE7_SECURITY_PLAN.md", "PHASE7_SEPARATED_RECOVERY.md", "PHASE7_OFFHOST_SYNTHETIC_DESIGN.md", "PHASE7_R2_SYNTHETIC_PLAN.md", "PHASE8_PC_SYNC_ARCHITECTURE.md",
