@@ -1,0 +1,83 @@
+{
+  "scope": "reviewed preparation files; excludes self/Git internals/bytecode; git_sha256 is canonical Git blob, sha256 is local Windows working bytes",
+  "files": {
+    ".gitignore": {
+      "sha256": "24f0b18b9ad018c8051602607db8203385f0375a73fc66533390b5c03588203d",
+      "bytes": 351,
+      "git_sha256": "88cd06d96c326e0cbfc205269c2817ad9e76ef248f6f11196aaaefac582733d8",
+      "git_bytes": 326
+    },
+    "README.md": {
+      "sha256": "8b0629b3eea1833a2a8a471d9d95d0965b8578b7d01b997e1bdf2d79c7bc8926",
+      "bytes": 2515,
+      "git_sha256": "39edc3cedb116042459d89829936134092f7733b3b2e13dc2b814ded0d222203",
+      "git_bytes": 2479
+    },
+    "RESTART.md": {
+      "sha256": "1affb07b3bc193bcbe59429fe644417eaa152f2ba63c00a04ea0065ccdfa8a1d",
+      "bytes": 1893,
+      "git_sha256": "4b7802a5e54efeeed6632f0fa3b31e2c338f85cac3c3ab95871a068e0a74c012",
+      "git_bytes": 1868
+    },
+    "SECURITY_REVIEW.md": {
+      "sha256": "ff580131f86c1e517dfec267bf0a1a738bdb374eabbbdbf0b459b0aa820a4492",
+      "bytes": 6549,
+      "git_sha256": "aae1893709dcfab4c6d0f36425ae5062876f9506f2b13dcc98dc97094e6fe441",
+      "git_bytes": 6463
+    },
+    "WORKFLOW_REVIEW.md": {
+      "sha256": "dde94caf2a2ffc9c3b3ab12ae4a6a57cedd10cbdad7f521874bc1dc445df087c",
+      "bytes": 2172,
+      "git_sha256": "1eedee81a9529bbf77557381947267a2f2c25286abb5b71f8c26f486548ceca6",
+      "git_bytes": 2141
+    },
+    "audit/BASE_INVENTORY.json": {
+      "sha256": "273597508d4db919ac186df8039801f5e91453cc287c9a0ce567283a305406d1",
+      "bytes": 1002,
+      "git_sha256": "c2ccb4916526f0e4af52d44007f087d066a83afa0785108fc5b82536bbac368a",
+      "git_bytes": 977
+    },
+    "audit/CHECKPOINT.json": {
+      "sha256": "e2d911401333bc690ea3e0ef20c0f846d8605d5fabfea29792b7c3f8ff3b254b",
+      "bytes": 818,
+      "git_sha256": "6caf66a653b011618e251a0bc4e2e67f1eb20c34d36fe28b3a077d8bf97c7589",
+      "git_bytes": 794
+    },
+    "audit/OFFLINE_TEST_RESULTS.txt": {
+      "sha256": "9a3071b9b2b20ecdec583eb43bf873cab94594306360b9a20a9e18e4d727e97b",
+      "bytes": 1624,
+      "git_sha256": "309b5b8b8f12b00c2386c24cb20bd55c3d5eef8bdd9547174fe4881bc099af49",
+      "git_bytes": 1605
+    },
+    "audit/github-observations.json": {
+      "sha256": "40a143c9781573a9b50004fc188599131f17bd408684cf73c6cc93fd5db14f4e",
+      "bytes": 5468,
+      "git_sha256": "d6a5a111ca55863f75e42cdcc5f9ffb4eb8c0b2060934e2f044ea8ec0becf5b9",
+      "git_bytes": 5261
+    },
+    "scripts/security_preflight.py": {
+      "sha256": "214ca4710c05151197dd41761719fe1b27fd520f00e9b59c7ba04c45257c22b8",
+      "bytes": 4823,
+      "git_sha256": "75f7b529bd976f7ca58139e753600dc56fbe3de1b1ce7721a25f19985da5e3d7",
+      "git_bytes": 4744
+    },
+    "templates/manual-only.yml.disabled": {
+      "sha256": "4dd452eedf405599a986dce6c4d29c49a237156f52f12c3150bb8b206c8d12a9",
+      "bytes": 786,
+      "git_sha256": "4650b7f5ea24efacaf1fe3eda98efdb73a2e7b5e19ed3b4dbe534d0a4312a73c",
+      "git_bytes": 753
+    },
+    "tests/test_bootstrap.py": {
+      "sha256": "c41c0df3bd011a3d386f202fb7733d772012663866611d00cf0e719c321a6529",
+      "bytes": 946,
+      "git_sha256": "85a10c502270d5508b3b14837da985c7d0155a8c4a644799408e9f2646e06b55",
+      "git_bytes": 922
+    },
+    "tests/test_security_preflight.py": {
+      "sha256": "59a97abcc3530c8c8f73ddf87d512b32d266d624d24faf623870f1b7267f45e1",
+      "bytes": 4928,
+      "git_sha256": "26941adfecc844e89cbb4b9c6ea013708fd47c495ba48ca590691c4ba43d38fc",
+      "git_bytes": 4836
+    }
+  }
+}
