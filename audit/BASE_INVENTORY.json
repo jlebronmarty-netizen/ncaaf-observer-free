@@ -1,0 +1,25 @@
+{
+  "git": "980c596d11b21572388e08d36367bf34fed053c4",
+  "files": {
+    ".gitignore": {
+      "git_blob": "9b91ededabc75c4e8dcc2dfbde248884d533400a",
+      "sha256": "a04538da739438998d75ebc469d9e5384b68fd2129f11b0094ad62acc9bd0b39"
+    },
+    "README.md": {
+      "git_blob": "8d816a187a5d8bb86b3f85f7c97982f4c4b0ecba",
+      "sha256": "8fb9c3146236d10d9b3e8bb944aa7c09b7f822c40b1b4b7163cb4871b7373dad"
+    },
+    "SECURITY_REVIEW.md": {
+      "git_blob": "d1061f048977bf7163bf674e3b12611761a4ac6f",
+      "sha256": "936033a4b8f797da9a21fa9aa6efa1082bf5b1eb5677cf130fc818cf43ddb992"
+    },
+    "templates/manual-only.yml.disabled": {
+      "git_blob": "47a1ed1006bb721e12ea895b41eeb7a5852e6561",
+      "sha256": "2c664e59408866e760e9e5a33eb2c37cae4af9dfe53b88fd806a66304ef794a9"
+    },
+    "tests/test_bootstrap.py": {
+      "git_blob": "375c27f23ef0ba13128724d3afb4969fbf889dfd",
+      "sha256": "85a10c502270d5508b3b14837da985c7d0155a8c4a644799408e9f2646e06b55"
+    }
+  }
+}

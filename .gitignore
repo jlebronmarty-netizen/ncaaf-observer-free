@@ -1,16 +1,25 @@
-# Refuse to accidentally stage operational state
-*.sqlite
-*.sqlite3
-*.db
-*.zip
-*.aesgcm
+# Defense in depth only; ignores do not prevent force-add or application writes.
+*.[sS][qQ][lL][iI][tT][eE]
+*.[sS][qQ][lL][iI][tT][eE]3
+*.[dD][bB]
+*.[zZ][iI][pP]
+*.[aA][eE][sS][gG][cC][mM]
 *.pem
 *.key
+*.p12
+*.pfx
+*.tar
+*.gz
+*.7z
+*.csv
+*.jsonl
+*.parquet
 .env
 .env.*
 state/
 backups/
 raw/
 forecasts/
+datasets/
 *.log
 __pycache__/

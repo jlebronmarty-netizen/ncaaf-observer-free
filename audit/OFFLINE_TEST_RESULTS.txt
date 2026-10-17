@@ -1,0 +1,19 @@
+test_no_live_workflows (test_bootstrap.SafeBootstrap.test_no_live_workflows) ... ok
+test_no_state_or_secrets (test_bootstrap.SafeBootstrap.test_no_state_or_secrets) ... ok
+test_review_gates (test_bootstrap.SafeBootstrap.test_review_gates) ... ok
+test_templates_disabled (test_bootstrap.SafeBootstrap.test_templates_disabled) ... ok
+test_checkout_credentials_and_pin (test_security_preflight.SecurityPreflight.test_checkout_credentials_and_pin) ... ok
+test_disguised_archives_and_database (test_security_preflight.SecurityPreflight.test_disguised_archives_and_database) ... ok
+test_forbidden_triggers (test_security_preflight.SecurityPreflight.test_forbidden_triggers) ... ok
+test_ignore_patterns (test_security_preflight.SecurityPreflight.test_ignore_patterns) ... ok
+test_no_transfer_publication_or_extra_commands (test_security_preflight.SecurityPreflight.test_no_transfer_publication_or_extra_commands) ... ok
+test_operational_file_rejection (test_security_preflight.SecurityPreflight.test_operational_file_rejection) ... ok
+test_privileges_runtime_timeout_and_expressions (test_security_preflight.SecurityPreflight.test_privileges_runtime_timeout_and_expressions) ... ok
+test_repository (test_security_preflight.SecurityPreflight.test_repository) ... ok
+test_synthetic_credential_detection_and_redaction (test_security_preflight.SecurityPreflight.test_synthetic_credential_detection_and_redaction) ... ok
+test_workflow_contract (test_security_preflight.SecurityPreflight.test_workflow_contract) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.162s
+
+OK
