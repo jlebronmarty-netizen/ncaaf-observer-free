@@ -11,7 +11,8 @@ class PostgresLabContract(unittest.TestCase):
     def test_disposable_transaction_guard(self):
         text=SQL.read_text();self.assertIn("current_database() <> 'synthetic_permission_lab'",text)
         self.assertIn('Refuse existing roles',text);self.assertIn('\\set ON_ERROR_STOP on',text)
-        self.assertTrue(text.rstrip().endswith('ROLLBACK;'))
+        self.assertTrue(text.rstrip().endswith('-- LAB_COMPLETE'))
+        self.assertIn('-- LAB_SESSION: ncaaf_lab_writer',text)
 
     def test_no_remote_connection_or_credential_commands(self):
         text=SQL.read_text()
@@ -37,6 +38,20 @@ class PostgresLabContract(unittest.TestCase):
         self.assertIn('FORCE ROW LEVEL SECURITY',text)
         self.assertIn('SET search_path=pg_catalog,pg_temp',text)
         self.assertNotIn('SECURITY DEFINER SET search_path=public',text)
+
+    def test_authenticated_harness_contract(self):
+        import sys
+        sys.path.insert(0,str(ROOT/'scripts'))
+        import postgres_lab_runner as runner
+        plan=runner.stages(SQL.read_text())
+        self.assertEqual({role for role,_ in plan}, {'admin',*runner.ROLES})
+        self.assertTrue(all('SET ROLE ncaaf_lab_owner;' not in sql for role,sql in plan if role!='admin'))
+        source=(ROOT/'scripts/postgres_lab_runner.py').read_text()
+        self.assertIn("role,role,'f','f','f','f','f','0'",source)
+        self.assertIn("passfiles[role]",source)
+        self.assertIn('LOGIN PASSWORD',source)
+        self.assertNotIn('PGPASSWORD=',source)
+        self.assertIn("'role escalation','SET ROLE ncaaf_lab_owner','42501'",SQL.read_text())
 
     def test_only_approved_fixture_objects(self):
         text=SQL.read_text()

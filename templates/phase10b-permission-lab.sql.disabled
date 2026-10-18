@@ -1,7 +1,7 @@
--- NON-EXECUTED synthetic lab. ONLY a fresh disposable LOCAL PostgreSQL 17 cluster.
+-- Staged synthetic lab. ONLY the reviewed runner on a fresh disposable LOCAL PostgreSQL 17 cluster.
 -- Not a migration; never run against Supabase or any existing database.
 \set ON_ERROR_STOP on
-BEGIN;
+-- LAB_SESSION: admin
 DO $$ BEGIN
   IF current_database() <> 'synthetic_permission_lab' THEN RAISE EXCEPTION 'Wrong disposable database'; END IF;
   IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname LIKE 'ncaaf_lab_%') THEN RAISE EXCEPTION 'Refuse existing roles'; END IF;
@@ -34,10 +34,10 @@ CREATE FUNCTION synthetic_mlb.bump_canary() RETURNS void LANGUAGE sql SECURITY D
 SET search_path=pg_catalog,pg_temp AS $$ UPDATE synthetic_mlb.canary SET value=value+1 WHERE id=1 $$;
 GRANT USAGE ON SCHEMA synthetic_mlb TO PUBLIC;
 RESET ROLE;
-SET ROLE ncaaf_lab_writer;
+-- LAB_SESSION: ncaaf_lab_writer
 SELECT synthetic_mlb.bump_canary(); -- expected baseline PUBLIC definer access
 SELECT synthetic_checks.expect_state('direct MLB rows denied','SELECT * FROM synthetic_mlb.canary','42501');
-RESET ROLE;
+-- LAB_SESSION: admin
 DO $$ BEGIN IF (SELECT value FROM synthetic_mlb.canary WHERE id=1)<>1 THEN RAISE EXCEPTION 'Risk baseline not reproduced'; END IF; END $$;
 SET ROLE ncaaf_lab_owner;
 REVOKE EXECUTE ON FUNCTION synthetic_mlb.bump_canary() FROM PUBLIC;
@@ -87,7 +87,7 @@ GRANT SELECT ON synthetic_ncaaf.forecasts,synthetic_ncaaf.checkpoints TO ncaaf_l
 CREATE FUNCTION synthetic_ncaaf.cleanup_receipt() RETURNS text LANGUAGE sql SECURITY INVOKER SET search_path=pg_catalog,pg_temp AS $$ SELECT 'SYNTHETIC_NO_DELETE_WITHOUT_RESTORE_REVIEW'::text $$;
 GRANT EXECUTE ON FUNCTION synthetic_ncaaf.cleanup_receipt() TO ncaaf_lab_cleanup;
 RESET ROLE;
-SET ROLE ncaaf_lab_writer;
+-- LAB_SESSION: ncaaf_lab_writer
 SELECT synthetic_ncaaf.claim(0,1200);
 SELECT synthetic_ncaaf.publish(0,1,'SYNTHETIC-FIRST',21);
 SELECT synthetic_checks.expect_state('stale generation','SELECT synthetic_ncaaf.publish(0,1,''SYNTHETIC-STALE'',1)','40001');
@@ -102,8 +102,8 @@ SELECT synthetic_checks.expect_state('MLB function hardened','SELECT synthetic_m
 SELECT synthetic_checks.expect_state('schema CREATE','CREATE TABLE synthetic_ncaaf.escape(id int)','42501');
 SELECT synthetic_checks.expect_state('role escalation','SET ROLE ncaaf_lab_owner','42501');
 SELECT synthetic_checks.expect_state('new privileged role','CREATE ROLE synthetic_escalation SUPERUSER','42501');
-RESET ROLE;
-SET ROLE ncaaf_lab_reader;
+-- LAB_SESSION: admin
+-- LAB_SESSION: ncaaf_lab_reader
 DO $$ BEGIN IF (SELECT count(*) FROM synthetic_ncaaf.forecasts)<>1 THEN RAISE EXCEPTION 'Missing immutable forecast'; END IF; END $$;
 SELECT synthetic_checks.expect_state('reader writer RPC','SELECT synthetic_ncaaf.publish(1,1,''SYNTHETIC-READER'',1)','42501');
 SELECT synthetic_checks.expect_state('reader claim','SELECT synthetic_ncaaf.claim(1,1)','42501');
@@ -114,29 +114,29 @@ SELECT synthetic_checks.expect_state('reader MLB SELECT','SELECT * FROM syntheti
 SELECT synthetic_checks.expect_state('reader MLB function','SELECT synthetic_mlb.bump_canary()','42501');
 -- PostgreSQL catalog schema names are discoverable; do not claim names are secret.
 DO $$ BEGIN IF NOT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname='synthetic_mlb') THEN RAISE EXCEPTION 'Expected visible catalog name'; END IF; END $$;
-RESET ROLE;
-SET ROLE ncaaf_lab_recovery;
+-- LAB_SESSION: admin
+-- LAB_SESSION: ncaaf_lab_recovery
 DO $$ BEGIN IF (SELECT count(*) FROM synthetic_ncaaf.checkpoints)<>1 THEN RAISE EXCEPTION 'Recovery read failed'; END IF; END $$;
 SELECT synthetic_checks.expect_state('recovery INSERT','INSERT INTO synthetic_ncaaf.forecasts VALUES(''SYNTHETIC-RECOVERY-RAW'',''NCAAF_SYNTHETIC'',1)','42501');
 SELECT synthetic_checks.expect_state('recovery UPDATE','UPDATE synthetic_ncaaf.forecasts SET score=2','42501');
 SELECT synthetic_checks.expect_state('recovery mutation','DELETE FROM synthetic_ncaaf.checkpoints','42501');
 SELECT synthetic_checks.expect_state('recovery publication','SELECT synthetic_ncaaf.publish(1,1,''SYNTHETIC-RECOVERY'',1)','42501');
-RESET ROLE;
-SET ROLE ncaaf_lab_cleanup;
+-- LAB_SESSION: admin
+-- LAB_SESSION: ncaaf_lab_cleanup
 SELECT synthetic_ncaaf.cleanup_receipt();
 SELECT synthetic_checks.expect_state('cleanup rows denied','SELECT * FROM synthetic_ncaaf.forecasts','42501');
 SELECT synthetic_checks.expect_state('unreviewed cleanup denied','DELETE FROM synthetic_ncaaf.forecasts','42501');
 SELECT synthetic_checks.expect_state('cleanup publication','SELECT synthetic_ncaaf.publish(1,1,''SYNTHETIC-CLEANUP'',1)','42501');
-RESET ROLE;
+-- LAB_SESSION: admin
 -- Subtransaction-only RLS exclusion proof; rolls back policy change immediately.
-SAVEPOINT synthetic_rls_probe;
+-- Committed disposable policy probe visible to independently authenticated reader.
 SET ROLE ncaaf_lab_owner;
 ALTER POLICY read_forecasts ON synthetic_ncaaf.forecasts USING(false);
 RESET ROLE;
-SET ROLE ncaaf_lab_reader;
+-- LAB_SESSION: ncaaf_lab_reader
 DO $$ BEGIN IF (SELECT count(*) FROM synthetic_ncaaf.forecasts)<>0 THEN RAISE EXCEPTION 'RLS exclusion failed'; END IF; END $$;
-RESET ROLE;
-ROLLBACK TO SAVEPOINT synthetic_rls_probe;
+-- LAB_SESSION: admin
+ALTER POLICY read_forecasts ON synthetic_ncaaf.forecasts USING(sport='NCAAF_SYNTHETIC');
 -- Privileged harness checks atomic failure rollback and immutable triggers without modifying real state.
 DO $$ BEGIN
  IF (SELECT generation FROM synthetic_ncaaf.control WHERE id=1)<>1 OR (SELECT count(*) FROM synthetic_ncaaf.forecasts)<>1 OR (SELECT count(*) FROM synthetic_ncaaf.checkpoints)<>1 THEN RAISE EXCEPTION 'Failed transaction leaked'; END IF;
@@ -145,7 +145,7 @@ SELECT synthetic_checks.expect_state('forecast immutable','UPDATE synthetic_ncaa
 SELECT synthetic_checks.expect_state('checkpoint immutable','DELETE FROM synthetic_ncaaf.checkpoints','55000');
 -- Simulate expired lease in the harness only; new epoch fences old writer.
 UPDATE synthetic_ncaaf.control SET expires='epoch' WHERE id=1;
-SET ROLE ncaaf_lab_writer;
+-- LAB_SESSION: ncaaf_lab_writer
 SELECT synthetic_ncaaf.claim(1,1200);
 SELECT synthetic_checks.expect_state('expired prior epoch','SELECT synthetic_ncaaf.publish(1,1,''SYNTHETIC-OLD'',1)','40001');
 SAVEPOINT synthetic_interrupted;
@@ -156,16 +156,16 @@ SAVEPOINT synthetic_search_path_probe;
 CREATE TEMP TABLE control(generation bigint);
 INSERT INTO pg_temp.control VALUES(999);
 SET LOCAL search_path=pg_temp,synthetic_mlb;
-SELECT synthetic_ncaaf.publish(2,2,'SYNTHETIC-SHADOW-SAFE',1);
-RESET ROLE;
-DO $$ BEGIN IF (SELECT generation FROM synthetic_ncaaf.control WHERE id=1)<>3 OR (SELECT generation FROM pg_temp.control)<>999 THEN RAISE EXCEPTION 'Search path shadowing'; END IF; END $$;
+DO $$ BEGIN
+ IF synthetic_ncaaf.publish(2,2,'SYNTHETIC-SHADOW-SAFE',1)<>3 OR (SELECT generation FROM pg_temp.control)<>999 THEN RAISE EXCEPTION 'Search path shadowing'; END IF;
+END $$;
 ROLLBACK TO SAVEPOINT synthetic_search_path_probe;
-RESET ROLE;
+-- LAB_SESSION: admin
 DO $$ BEGIN
  IF (SELECT count(*) FROM synthetic_ncaaf.forecasts)<>2 OR (SELECT generation FROM synthetic_ncaaf.control WHERE id=1)<>2 THEN RAISE EXCEPTION 'Recovery parity'; END IF;
  IF EXISTS(SELECT 1 FROM synthetic_ncaaf.forecasts WHERE id='SYNTHETIC-INTERRUPTED') THEN RAISE EXCEPTION 'Partial publication visible'; END IF;
  IF EXISTS(SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace CROSS JOIN LATERAL aclexplode(COALESCE(p.proacl,acldefault('f',p.proowner))) a WHERE n.nspname='synthetic_ncaaf' AND a.grantee=0 AND a.privilege_type='EXECUTE') THEN RAISE EXCEPTION 'Unexpected PUBLIC execute'; END IF;
 END $$;
 SELECT 'SYNTHETIC_POSTGRES_PERMISSION_LAB_PASS' AS result;
--- No fixture roles, schemas or rows survive successful execution.
-ROLLBACK;
+-- Staged connections need committed setup; owned cluster is destroyed by the launcher after verification.
+-- LAB_COMPLETE
