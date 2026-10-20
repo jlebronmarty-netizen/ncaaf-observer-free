@@ -9,6 +9,7 @@ import sys
 
 ALLOWED = {
     "PHASE10_SUPABASE_ISOLATION_AUDIT.md",
+    "scripts/postgres_advanced_lab.py", "tests/test_postgres_advanced_lab.py", "PHASE10E_POSTGRES_ADVANCED_REVIEW.md",
     ".gitignore", "README.md", "SECURITY_REVIEW.md",
     "templates/manual-only.yml.disabled", "tests/test_bootstrap.py",
     "tests/test_security_preflight.py", "tests/test_synthetic_recovery.py", "tests/test_separated_recovery.py", "tests/synthetic_crypto_check.mjs", "scripts/security_preflight.py", "scripts/synthetic_state_v1.py", "tests/test_synthetic_state_v1.py", "PHASE8B_SYNTHETIC_STATE.md", "tests/test_phase8c_hardening.py", "PHASE8C_SECURITY_REVIEW.md",

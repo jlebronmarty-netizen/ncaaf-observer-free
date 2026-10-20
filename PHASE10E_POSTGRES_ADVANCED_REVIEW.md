@@ -1,0 +1,39 @@
+# Phase10E advanced local synthetic PostgreSQL laboratory
+
+Separate dependency branch from PR16 head7f51cfeb3fc0715afc848667c9399905871e55a3. PR15/16 are untouched; no merge authorized. No provider connection, real sport data, operational credentials, workflow change or service installation.
+
+The unchanged Phase10D baseline must pass30 expected-denial assertions before advanced execution. All existing SQL, authenticated baseline runner, simulator, adapter, bridge, frozen references and workflow/template remain byte-identical. Only an explicit advanced local runner, offline helper tests, this document and three exact scanner allowlist entries are added.
+
+## Contracts and scope
+
+Four real authenticated LOGIN identities, no SET ROLE impersonation for runtime tests. Independent password files, loopback-only SCRAM, owner-only protected/inherited filesystem ACL, fresh disposable clusters. Admin setup/failure injection never represents restricted-role evidence. PostgreSQL metadata name visibility is not confidentiality. Default PUBLIC schema USAGE for the hardened synthetic MLB namespace is preserved; its rows and function are denied. An unrelated private namespace is separately denied.
+
+Finite exhaustive permission matrix:4roles x7tables x7table privileges plus actual SELECT/INSERT/UPDATE/DELETE/TRUNCATE,4schemas USAGE/CREATE,6functions ACL and denied execution, cross-role/admin escalation and role creation. This is exhaustive over that enumerated set only, not every PostgreSQL feature or administrative threat. Baseline exercises forced RLS exclusion, PUBLIC EXECUTE risk/hardening and temporary search_path shadowing. New live table/function canaries test hardened defaults.
+
+Concurrent writers use separate authenticated psql processes with the same restricted writer principal. One transaction holds the control row; the competitor is proven blocked using owned-cluster pg_stat_activity before release. Exactly one generation may commit; stale generation40001 must have no side effects. Old fence, expired lease and takeover are checked independently. A transaction is failed with22012 before COMMIT; a separate writer connection is killed before COMMIT while an authenticated reader verifies only committed state.
+
+The original PostgreSQL fixture has no settlement table. A NEW synthetic_phase10e canary uses synthetic forecast IDs, immutable outcome rows, duplicate same-outcome idempotency and23505 on conflicting outcomes. This does not change or certify authentic PPG/Ridge settlement or the Phase8/9 contract. No operational data is imported.
+
+Supported recovery is a consistent pg_dump custom archive followed by pg_restore --single-transaction --exit-on-error into a separately initialized cluster. Global lab role names/attributes are recreated explicitly; passwords are regenerated, never backed up. Canonical row/constraint/trigger/function/policy/default-privilege/ACL/role-membership snapshots must match exactly. Missing/tampered archive material is rejected by a trusted SHA256/size gate BEFORE pg_restore. This does not claim PostgreSQL itself cryptographically authenticates archives or a same-user attacker cannot alter external receipts. A production trusted checkpoint floor/key custody remains unresolved.
+
+## Reproduction and evidence
+
+Offline: python -I -m unittest discover -s tests -v; python -I scripts/security_preflight.py; node tests/synthetic_crypto_check.mjs. New helper tests never provision/connect PostgreSQL; actual engine coverage is in separate receipts. No workflow executes the lab.
+
+Actual owner-authorized provisioning/startup commands and redacted logs are kept at C:/Users/jlebr/sports-edge-hub/research/ncaaf-observer-phase10e-evidence-20261018. The launcher accepts only newly owned marked directories, verified portable17.11 binaries and private passfiles. No install, persistent credentials, PATH/service/firewall change or cloud connection. STOP on first unexpected engine/security result; preserve partial evidence, shut down owned clusters and do not retune assertions within the run. A pre-execution Python parenthesis typo was corrected before any advanced cluster/freeze; no expected permission changed.
+
+Final counts, backup sizes/parity, cleanup, exact SHA and receipt hashes must be taken from the final checkpoint/PR, not inferred from static test presence. HOSTED_READY=false; MODEL_VALIDATED=false; HISTORICAL_GUARD_UNEXPLAINED preserved. Actual provider isolation, durable trusted checkpoint/key custody, cost certification and separately approved hosted tests remain gates even after a local PASS.
+
+## Executed results (2026-10-18)
+
+PostgreSQL17.11 EDB portable17.11-5 archive SHA25680379b2c04d51c30225532e0ae04509899141e9957ed096fe749d7fd9df8f82f was reverified, not downloaded or installed. All1568 extracted files match the prior verified manifest. Initial fresh baseline:30/30 expected denials; a second fresh source cluster also passed the unchanged30-denial baseline before advanced probes. Do not double-count these separate baseline executions as new coverage.
+
+Advanced460/460 checks PASS:440 explicitly enumerated matrix checks and20 concurrency/atomicity/fencing/settlement checks. These include196 table privilege predicates,140 actual table operations,32 schema privilege checks,24 function privilege predicates,20 actual denied function calls,24 role-escalation/role-creation denials and4 direct identity checks. There were186 precise expected-error query invocations across the complete advanced run (including controlled22012 and integrity conflicts); these are not186 distinct privilege types. No unexpected engine failure or unreached planned check. Restored authenticated role probes:16/16 PASS. Five further recovery gates PASS: missing/tampered material rejected, source restart parity, separate-cluster restore parity and restored-cluster restart parity. Counts denote assertion groups, not independent model/scientific evidence.
+
+CAS winner and loser were genuinely overlapping transactions; lock wait observed before release. Original forecast/checkpoint rows retained. Duplicate concurrent canary settlements produced one immutable row; conflict rejected23505. Simultaneous reader saw generation3 and no uncommitted forecast; disconnected publication fully rolled back. Final source:3forecasts,3checkpoints,1control row,1canary settlement; generation3, fence4.
+
+Consistent custom archive24,041bytes, SHA25656268087d2d2efaba5595e5fcd73658b93b017019f49e3ed405972c54e6e7a4b. Before/restored canonical authority SHA256a9edc0190da68f60d2446b5a37d0f0efe8fefc3f8a83a04c314c73bb06f2fb7c. Snapshot includes rows, identities, constraints, triggers, function definitions/ACLs, RLS/policies, schemas, defaults and role attributes/memberships; excludes regenerated passwords and unstable object OIDs. Observed synthetic dump0.324s and restore0.384s exclude cluster initialization/restart and are not hosted-capacity estimates.
+
+Python124/124 PASS (original115 unchanged plus9 offline helper/contract tests); scanner OFFLINE_SECURITY_PASS; Node SYNTHETIC_AES_GCM_PASS. The engine runner's executed bytes are frozen in SOURCE_FREEZE.json and must match committed source. Full logs/exit codes/SQLSTATEs and final cleanup/commit receipts are retained separately. The original manual workflow/template and frozen baseline source remain unchanged. No production readiness claim.
+
+PostgreSQL17 official references: https://www.postgresql.org/docs/17/app-pgdump.html (consistent single-database backups; roles are global objects not dumped), https://www.postgresql.org/docs/17/app-pgrestore.html (custom archives, single-transaction/exit-on-error). Only this trusted newly authored synthetic source was restored; arbitrary untrusted dumps can execute source-controlled code and must never be accepted merely because a hash file accompanies them.
