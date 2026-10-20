@@ -8,6 +8,7 @@ import re
 import sys
 
 ALLOWED = {
+    "PHASE11_HOSTING_READINESS.md",
     "PHASE10_SUPABASE_ISOLATION_AUDIT.md",
     "scripts/postgres_advanced_lab.py", "tests/test_postgres_advanced_lab.py", "PHASE10E_POSTGRES_ADVANCED_REVIEW.md",
     ".gitignore", "README.md", "SECURITY_REVIEW.md",
